@@ -720,7 +720,7 @@ static const struct iio_chan_spec inv_mpu_channels[] = {
 };
 
 /* constant IIO attribute */
-static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("10 20 50 100 200 500");
+static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("10 20 50 100 200 500 1000");
 static IIO_CONST_ATTR(in_anglvel_scale_available,
 					  "0.000133090 0.000266181 0.000532362 0.001064724");
 static IIO_CONST_ATTR(in_accel_scale_available,
