@@ -155,6 +155,7 @@ ssize_t iio_buffer_read_first_n_outer(struct file *filp, char __user *buf,
  *		a wait queue
  *
  * Return: (POLLIN | POLLRDNORM) if data is available for reading
+ *	   POLLERR if device was unregistered in our back
  *	   or 0 for other cases
  */
 unsigned int iio_buffer_poll(struct file *filp,
@@ -162,13 +163,20 @@ unsigned int iio_buffer_poll(struct file *filp,
 {
 	struct iio_dev *indio_dev = filp->private_data;
 	struct iio_buffer *rb = indio_dev->buffer;
+	bool rdy;
 
 	if (!indio_dev->info)
-		return 0;
+		return POLLERR;
 
 	poll_wait(filp, &rb->pollq, wait);
-	if (iio_buffer_ready(indio_dev, rb, rb->watermark, 0))
+	rdy = iio_buffer_ready(indio_dev, rb, rb->watermark, 0);
+
+	if (!indio_dev->info)
+		return POLLERR;
+
+	if (rdy)
 		return POLLIN | POLLRDNORM;
+
 	return 0;
 }
 
